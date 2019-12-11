@@ -1,3 +1,4 @@
-This is the result of an awesome hackathon.
-team [enter team name here]
+This is the first place result of an awesome hackathon hosted by codeforall Utrecht.
+made by:
+the SWEAt
 
