@@ -2,8 +2,7 @@ package nl.codeforall.cannabits.teamsweat.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import nl.codeforall.cannabits.teamsweat.Drop;
-import nl.codeforall.cannabits.teamsweat.MyGdxGame;
+import nl.codeforall.cannabits.teamsweat.example.Drop;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

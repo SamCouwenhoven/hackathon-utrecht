@@ -1,4 +1,4 @@
-package nl.codeforall.cannabits.teamsweat;
+package nl.codeforall.cannabits.teamsweat.example;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
