@@ -39,8 +39,8 @@ public class GameScreen implements Screen {
         this.game = game;
 
         // load the images for the droplet and the bucket, 64x64 pixels each
-        dropImage = new Texture(Gdx.files.internal("droplet.png"));
-        bucketImage = new Texture(Gdx.files.internal("llama.png"));
+        dropImage = new Texture(Gdx.files.internal("example/droplet.png"));
+        bucketImage = new Texture(Gdx.files.internal("example/llama.png"));
         TextureRegion[][] tmp = TextureRegion.split(bucketImage,
                 bucketImage.getWidth() / FRAME_COLS,
                 bucketImage.getHeight() / FRAME_ROWS);
@@ -60,9 +60,9 @@ public class GameScreen implements Screen {
 
 
         // load the drop sound effect and the rain background "music"
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
-        scream = Gdx.audio.newSound(Gdx.files.internal("scream.wav"));
+        dropSound = Gdx.audio.newSound(Gdx.files.internal("example/drop.wav"));
+        rainMusic = Gdx.audio.newMusic(Gdx.files.internal("example/rain.mp3"));
+        scream = Gdx.audio.newSound(Gdx.files.internal("example/scream.wav"));
 
         rainMusic.setLooping(true);
 
@@ -188,7 +188,8 @@ public class GameScreen implements Screen {
         }
 
         if (player2.overlaps(bucket)){
-            scream.play();
+
+            scream.play(1,0.4f,0);
         }
     }
 
