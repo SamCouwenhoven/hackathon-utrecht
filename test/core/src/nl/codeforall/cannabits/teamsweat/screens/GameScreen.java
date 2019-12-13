@@ -1,6 +1,7 @@
 package nl.codeforall.cannabits.teamsweat.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -10,13 +11,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.TimeUtils;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapType;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
@@ -25,8 +21,6 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
-
-import java.sql.Time;
 import java.util.Iterator;
 
 import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
@@ -51,7 +45,6 @@ public class GameScreen implements Screen {
     private Array<Trap> traps;
     private Music bgm;
     private TextureRegion backgroundTexture;
-
     private Array<PowerUp> powerUps;
     private long lastTrapDropTime;
     private long lastPowerUpDropTime;
@@ -126,8 +119,6 @@ public class GameScreen implements Screen {
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-
-
         game.batch.begin();// draw in here
         game.batch.draw(backgroundTexture, 0, 0);
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
@@ -165,9 +156,6 @@ public class GameScreen implements Screen {
             }
         }
 
-
-        game.batch.end();
-
         timeSeconds +=Gdx.graphics.getRawDeltaTime();
         if(timeSeconds > period){
             timeSeconds-=period;
@@ -191,6 +179,7 @@ public class GameScreen implements Screen {
             }
 
         }
+        game.batch.end();
 
         Iterator<Trap> trapIterator = traps.iterator();
         while (trapIterator.hasNext()) {
@@ -200,7 +189,7 @@ public class GameScreen implements Screen {
             }
             if (trap.isArmed()) {
                 if (player1.overlaps(trap)) {
-                    player1.setStatus( trap.spring() );
+                    player1.setStatus( trap.spring());
                     trapIterator.remove();
                 }
                 if (player2.overlaps(trap)) {
@@ -220,15 +209,24 @@ public class GameScreen implements Screen {
             game.setScreen(new WinningScreen(game,getWinningPlayer()));
             dispose();
         }
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
-
 
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.R,Input.Keys.T);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
+            Boolean fullScreen = Gdx.graphics.isFullscreen();
+            Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+            if (fullScreen) {
+                Gdx.graphics.setWindowedMode(currentMode.width, currentMode.height);
+            } else {
+                Gdx.graphics.setFullscreenMode(currentMode);
+            }
+        }
+
         if(TimeUtils.nanoTime() - lastPowerUpDropTime > 1900000000){
             spawnPowerUp();
         }
+
         if(TimeUtils.nanoTime() - lastTrapDropTime > 2000000000){
             spawnTrap();
         }
