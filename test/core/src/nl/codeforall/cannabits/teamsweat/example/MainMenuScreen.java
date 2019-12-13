@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import nl.codeforall.cannabits.teamsweat.sandbox.GameScreenSandBox;
 
 public class MainMenuScreen implements Screen {
 
@@ -39,6 +40,7 @@ public class MainMenuScreen implements Screen {
 
         if (Gdx.input.isTouched()) {
             game.setScreen(new GameScreen(game));
+            game.setScreen(new GameScreenSandBox(game));
             dispose();
         }
     }
