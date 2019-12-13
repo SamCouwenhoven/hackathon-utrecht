@@ -2,6 +2,7 @@ package nl.codeforall.cannabits.teamsweat.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
@@ -9,8 +10,9 @@ import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 public class MainMenuScreen implements Screen {
 
     final LyricsFinder game;
+    private Music bgm;
 
-    OrthographicCamera camera;
+    private OrthographicCamera camera;
 
     public MainMenuScreen(final LyricsFinder game) {
         this.game = game;
@@ -18,11 +20,13 @@ public class MainMenuScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("mainbgm.mp3"));
+        bgm.setLooping(true);
     }
 
     @Override
     public void show() {
-
+        bgm.play();
     }
 
     @Override
@@ -66,6 +70,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        bgm.dispose();
     }
 }
