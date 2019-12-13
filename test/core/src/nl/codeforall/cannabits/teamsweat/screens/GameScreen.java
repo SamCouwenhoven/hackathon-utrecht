@@ -30,6 +30,7 @@ public class GameScreen implements Screen {
     private LyricsFinder game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
+    private long lastDropTime;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -93,39 +94,13 @@ public class GameScreen implements Screen {
             }
         }
 
-        /*
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            player1.x -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            player1.x += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            player1.y -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            player1.y += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-
-         */
-
-
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT);
         setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT);
-
-
-
-
 
     }
 
     private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap){
-        /*
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            player.x += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        */
+
 
         if(Gdx.input.isKeyPressed(left)) {
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
