@@ -38,8 +38,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);

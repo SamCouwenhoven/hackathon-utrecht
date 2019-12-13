@@ -6,14 +6,20 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+
+import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.X_SCREENLIMIT;
+import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.Y_SCREENLIMIT;
 
 public class WinningScreen implements Screen {
 
     final LyricsFinder game;
     private Player player;
     private Music bgm;
+    private TextureRegion backgroundTexture;
 
     private OrthographicCamera camera;
 
@@ -25,6 +31,7 @@ public class WinningScreen implements Screen {
 
         bgm = Gdx.audio.newMusic(Gdx.files.internal("endbgm.mp3"));
         bgm.setLooping(true);
+        backgroundTexture = new TextureRegion(new Texture("end-title.png"), 0, 0, X_SCREENLIMIT, Y_SCREENLIMIT);
 
     }
 
@@ -36,13 +43,11 @@ public class WinningScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0.412f, 0.71f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
+        game.batch.draw(backgroundTexture,0,0);
         game.font.draw(game.batch, player.getName() + " Won", 237, 240);
         game.batch.end();
         
