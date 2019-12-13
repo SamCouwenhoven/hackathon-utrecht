@@ -6,13 +6,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapType;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
+import java.sql.Time;
 import java.util.Iterator;
 import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 
@@ -32,6 +38,8 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private Array<Trap> traps;
     private Array<PowerUp> powerUps;
+    private long lastTrapDropTime;
+    private long lastPowerUpDropTime;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -51,7 +59,20 @@ public class GameScreen implements Screen {
         musicBoxes = new Array<>();
         musicBoxes.add(new MusicBox());
 
+        spawnPowerUp();
+        spawnTrap();
 
+    }
+    private void spawnPowerUp(){
+        int random = (int) (Math.random() * PowerUpType.values().length);
+        powerUps.add(PowerUpFactory.getPowerUp(PowerUpType.values()[random]));
+        lastPowerUpDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnTrap(){
+        int random = (int) (Math.random() * PowerUpType.values().length);
+        traps.add(TrapFactory.getTrap(TrapType.values()[random]));
+        lastTrapDropTime = TimeUtils.nanoTime();
     }
 
     @Override
@@ -137,7 +158,12 @@ public class GameScreen implements Screen {
 
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
         setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
-
+        if(TimeUtils.nanoTime() - lastPowerUpDropTime > 2000000000){
+            spawnPowerUp();
+        }
+        if(TimeUtils.nanoTime() - lastTrapDropTime > 2000000000){
+            spawnTrap();
+        }
     }
 
     private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap,int usePowerUp){

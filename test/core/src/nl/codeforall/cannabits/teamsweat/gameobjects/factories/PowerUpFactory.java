@@ -4,7 +4,7 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 
 public abstract class PowerUpFactory {
-    public PowerUp getPowerUp(PowerUpType powerUpType){
+    public static PowerUp getPowerUp(PowerUpType powerUpType){
         switch (powerUpType){
             case DoubleSpeed:
                 return new DoubleSpeed();
