@@ -10,19 +10,4 @@ public class Frozen extends PlayerStatusImpl {
         return 0;
     }
 
-    @Override
-    public void addPowerUp(PowerUp powerUp) {
-        //can't pick up power ups
-    }
-
-    @Override
-    public void addTrap(Trap trap) {
-        //can't pick up traps
-    }
-
-    @Override
-    public void placeTrap() {
-        //can't place traps
-    }
-
 }

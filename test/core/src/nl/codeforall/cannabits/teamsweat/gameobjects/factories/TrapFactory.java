@@ -1,5 +1,6 @@
 package nl.codeforall.cannabits.teamsweat.gameobjects.factories;
 
+import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FireTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
@@ -8,9 +9,11 @@ public abstract class TrapFactory {
         switch (trapType) {
             case FREEZE_TRAP:
                 return new FreezeTrap();
+            case FIRE_TRAP:
+                return new FireTrap();
 
 
         }
-        return new FreezeTrap();
+        return new FireTrap();
     }
 }
