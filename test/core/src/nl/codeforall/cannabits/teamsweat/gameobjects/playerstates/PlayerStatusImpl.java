@@ -10,23 +10,5 @@ public abstract class PlayerStatusImpl implements PlayerStatus{
     }
 
 
-    @Override
-    public void addPowerUp(PowerUp powerUp) {
 
-    }
-
-    @Override
-    public void addTrap(Trap trap) {
-
-    }
-
-    @Override
-    public void placeTrap() {
-
-    }
-
-    @Override
-    public PlayerStatus nextState() {
-        return new Default();
-    }
 }

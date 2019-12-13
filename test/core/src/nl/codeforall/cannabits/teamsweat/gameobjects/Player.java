@@ -2,12 +2,7 @@ package nl.codeforall.cannabits.teamsweat.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.Default;
-import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.DoubleSpeed;
-import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.Frozen;
-import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.PlayerStatus;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.*;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 import nl.codeforall.cannabits.teamsweat.screens.GameScreen;
@@ -20,11 +15,11 @@ public class Player extends GameObject{
     public static PlayerStatus DEFAULT_PLAYER_STATUS = new Default();
     public static PlayerStatus DOUBLE_SPEED_STATUS = new DoubleSpeed();
     public static PlayerStatus FROZEN_STATUS = new Frozen();
+    public static PlayerStatus BURNED_STATUS = new Burning();
 
     private final int POWERUP_DURATION = 5;
 
-    private final int FRAME_COLS = 4;
-    private final int FRAME_ROWS = 1;
+
     private float poweredUptime = 0f;
     private PowerUp powerUp;
     private PlayerStatus status;
