@@ -4,12 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.gameobjects.GameObject;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
 
-import javax.crypto.spec.PSource;
-
-public class MusicBox extends GameObject implements Pickable {
+public class MusicBox extends GameObject {
 
     private static final Texture IMAGE = new Texture("musicboxes/73687619-icon-music-box-scaled.png");
     private Sound sound;
@@ -29,12 +25,10 @@ public class MusicBox extends GameObject implements Pickable {
         return this.pickedUp;
     }
 
-    @Override
     public void pickedUp() {
 
     }
 
-    @Override
     public void use() {
         //can't be used
     }
