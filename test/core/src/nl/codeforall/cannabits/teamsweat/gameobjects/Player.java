@@ -1,5 +1,7 @@
 package nl.codeforall.cannabits.teamsweat.gameobjects;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
@@ -8,14 +10,15 @@ import java.util.ArrayList;
 public class Player extends GameObject{
 
     private PowerUp powerUp;
-    private Trap trap;// its a trap
+    private Trap trap;
     private boolean freeze;
     private int movementSpeed;
     private ArrayList words;
+    private static Texture PLAYER_TEXTURE = new Texture(Gdx.files.internal("example/droplet.png"));
 
 
     public Player(){
-        super();
+        super(PLAYER_TEXTURE);
         movementSpeed = 1;
         words = new ArrayList();
     }

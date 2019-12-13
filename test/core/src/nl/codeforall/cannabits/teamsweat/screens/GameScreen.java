@@ -12,9 +12,9 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
 public class GameScreen implements Screen {
 
     private final int TRAVEL_DISTANCE = 200;
-    private final int X_SCREENLIMIT = 800;
-    private final int Y_SCREENLIMIT = 480;
-    private final int SPRITESIZE = 64;
+    public static final int X_SCREENLIMIT = 800;
+    public static final int Y_SCREENLIMIT = 480;
+    public static final int SPRITESIZE = 64;
 
     private Player player1;
     private Player player2;
