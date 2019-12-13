@@ -61,14 +61,23 @@ public class Player extends GameObject{
     public void addTrap(Trap trap) {
         //sets the inventory trap
         this.trap = trap;
+        trap.pickedUp();
     }
 
     public void usePowerUp(){
 
     }
 
-    public void placeTrap(){
-
+    public Trap placeTrap(){
+        Trap toReturn = null;
+        if (trap != null){
+            trap.setX(this.x + 90);
+            trap.setY(this.y);
+            trap.use();
+            toReturn = trap;
+            trap = null;
+        }
+        return toReturn;
     }
 
     public void setFreeze(){

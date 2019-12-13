@@ -3,11 +3,19 @@ package nl.codeforall.cannabits.teamsweat.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
+import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
+
+import java.util.Iterator;
 
 public class GameScreen implements Screen {
 
@@ -19,11 +27,9 @@ public class GameScreen implements Screen {
     private Player player1;
     private Player player2;
 
-    //TODO: remove placeholder
-    private Texture playerPlaceHolder;
-
     private LyricsFinder game;
     private OrthographicCamera camera;
+    private Array<Trap> traps;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -31,20 +37,12 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, X_SCREENLIMIT, Y_SCREENLIMIT);
 
-        //TODO: remove placeholder
-        playerPlaceHolder = new Texture(Gdx.files.internal("example/droplet.png"));
-
-
         player1 = new Player();
-        player1.x = 500/2 - SPRITESIZE;
-        player1.y = 20;
-        player1.width = SPRITESIZE;
-        player1.height = SPRITESIZE;
         player2 = new Player();
-        player2.x = 200;
-        player2.y = 20;
-        player2.width = SPRITESIZE;
-        player2.height = SPRITESIZE;
+
+        traps = new Array<>();
+        traps.add(new FreezeTrap());
+
 
     }
 
@@ -63,9 +61,38 @@ public class GameScreen implements Screen {
 
         game.batch.begin();// draw in here
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
-        game.batch.draw(playerPlaceHolder, player1.x, player1.y);
-        game.batch.draw(playerPlaceHolder, player2.x, player2.y);
+        game.batch.draw(player1.getImage(), player1.x, player1.y);
+        game.batch.draw(player2.getImage(), player2.x, player2.y);
+        for (Trap trap: traps) {
+            game.batch.draw(trap.getImage(), trap.x, trap.y);
+        }
         game.batch.end();
+
+        Iterator<Trap> iter = traps.iterator();
+        while (iter.hasNext()) {
+            Trap trap = iter.next();
+            if (trap.isPickedUp() && !trap.isArmed()) {
+                iter.remove();
+            }
+            if (trap.isArmed()) {
+                if (player1.overlaps(trap)) {
+                    trap.spring();
+                    iter.remove();
+                }
+                if (player2.overlaps(trap)) {
+                    trap.spring();
+                    iter.remove();
+                }
+            }else{
+                if (player1.overlaps(trap)){
+                    player1.addTrap(trap);
+                }
+                if (player2.overlaps(trap)){
+                    player2.addTrap(trap);
+                }
+            }
+        }
+
         /*
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
             player1.x -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
@@ -77,12 +104,18 @@ public class GameScreen implements Screen {
             player1.y += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
 
          */
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D);
+
+
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT);
+
+
+
+
 
     }
 
-    private void setPlayerControls(Player player, int up, int down, int left, int right){
+    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap){
         /*
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
@@ -94,24 +127,39 @@ public class GameScreen implements Screen {
             player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         */
 
-        if(Gdx.input.isKeyPressed(left))
+        if(Gdx.input.isKeyPressed(left)) {
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(right))
+        }
+        if(Gdx.input.isKeyPressed(right)) {
             player.x += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(down))
+        }
+        if(Gdx.input.isKeyPressed(down)) {
             player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(up))
+        }
+        if(Gdx.input.isKeyPressed(up)) {
             player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
+        }
+        if(Gdx.input.isKeyPressed(placeTrap)) {
+            Trap trap = player.placeTrap();
+            if (trap != null){
+                traps.add(trap);
+            }
+        }
+
 
         //Boundaries
-        if (player.x < 0)
+        if (player.x < 0) {
             player.x = 0;
-        if (player.y < 0)
+        }
+        if (player.y < 0) {
             player.y = 0;
-        if (player.x > X_SCREENLIMIT-SPRITESIZE)
-            player.x = X_SCREENLIMIT-SPRITESIZE;
-        if (player.y > Y_SCREENLIMIT-SPRITESIZE)
-            player.y = Y_SCREENLIMIT-SPRITESIZE;
+        }
+        if (player.x > X_SCREENLIMIT - SPRITESIZE) {
+            player.x = X_SCREENLIMIT - SPRITESIZE;
+        }
+        if (player.y > Y_SCREENLIMIT - SPRITESIZE) {
+            player.y = Y_SCREENLIMIT - SPRITESIZE;
+        }
     }
 
     @Override
