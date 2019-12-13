@@ -1,6 +1,7 @@
 package nl.codeforall.cannabits.teamsweat.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -45,8 +46,8 @@ public class WinningScreen implements Screen {
         game.font.draw(game.batch, player.getName() + " Won", 237, 240);
         game.batch.end();
         
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game));
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
+            game.setScreen(new MainMenuScreen(game));
             dispose();
             }
     }
