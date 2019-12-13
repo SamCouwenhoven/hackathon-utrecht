@@ -2,16 +2,29 @@ package nl.codeforall.cannabits.teamsweat.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.Default;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.DoubleSpeed;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.Frozen;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.PlayerStatus;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
+import nl.codeforall.cannabits.teamsweat.screens.GameScreen;
 
 import java.util.ArrayList;
 
 public class Player extends GameObject{
 
+    public static PlayerStatus DEFAULT_PLAYER_STATUS = new Default();
+    public static PlayerStatus DOUBLE_SPEED_STATUS = new DoubleSpeed();
+    public static PlayerStatus FROZEN_STATUS = new Frozen();
+
+    private final int POWERUP_DURATION = 5;
+
+
+    private float poweredUptime = 0f;
     private PowerUp powerUp;
+    private PlayerStatus status;
     private Trap trap;
-    private boolean freeze;
     private int movementSpeed;
     private ArrayList words;
     private static Texture PLAYER_TEXTURE = new Texture(Gdx.files.internal("example/droplet.png"));
@@ -22,33 +35,31 @@ public class Player extends GameObject{
         super(PLAYER_TEXTURE);
         movementSpeed = 1;
         words = new ArrayList();
+        status = DEFAULT_PLAYER_STATUS;
     }
 
-    public void move(){
+    public void moveLeft(){
+        x -= GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
+    }
 
+    public void moveRight(){
+        x += GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
+    }
+
+    public void moveUp(){
+        y += GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
+    }
+
+    public void moveDown(){
+        y -= GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
     }
 
     public int getMovementSpeed() {
-        return movementSpeed;
+        return status.getMovementSpeed();
     }
 
     public void setMovementSpeed(int movementSpeed) {
         this.movementSpeed = movementSpeed;
-    }
-
-    /*
-    public void pickUp(Pickable pickable){
-        if(pickable instanceof PowerUp){
-            this.powerUp = (PowerUp) pickable;
-        }
-        else {this.trap = (Trap) pickable;
-        }
-
-    }
- */
-
-    public void storeWord(Words words){
-        this.words.add(words);
     }
 
     public void setPowerUp(PowerUp powerUp) {
@@ -72,9 +83,10 @@ public class Player extends GameObject{
 
     public void usePowerUp(){
         if (powerUp != null) {
-            powerUp.use();
+            status = powerUp.use();
             powerUp = null;
         }
+
     }
 
     public Trap placeTrap(){
@@ -99,6 +111,14 @@ public class Player extends GameObject{
 
     public void setMusicBoxes(){
         this.musicBoxes++;
+    }
+
+    public void setStatus(PlayerStatus status) {
+        this.status = status;
+    }
+
+    public void setDefault(){
+        status = DEFAULT_PLAYER_STATUS;
     }
 
 }

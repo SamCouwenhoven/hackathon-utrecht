@@ -3,10 +3,10 @@ package nl.codeforall.cannabits.teamsweat.gameobjects.powerups;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.gameobjects.GameObject;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.PlayerStatus;
 
-public abstract class PowerUp extends GameObject implements Pickable{
+public abstract class PowerUp extends GameObject {
 
     private boolean picked;
     private Sound activationSound;
@@ -17,7 +17,6 @@ public abstract class PowerUp extends GameObject implements Pickable{
         picked = false;
     }
 
-    @Override
     public void pickedUp() {
         //add to player
         picked = true;
@@ -25,14 +24,12 @@ public abstract class PowerUp extends GameObject implements Pickable{
 
     }
 
-    @Override
-    public void use() {
+    public PlayerStatus use() {
         activationSound.play();
         //remove from inventory
-
+        return Player.DEFAULT_PLAYER_STATUS;
     }
 
-    @Override
     public boolean isPickedUp() {
         return picked;
     }
