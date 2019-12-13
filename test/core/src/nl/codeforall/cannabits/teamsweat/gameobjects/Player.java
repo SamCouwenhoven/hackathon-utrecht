@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class Player extends GameObject{
 
+    private String name;
     private PowerUp powerUp;
     private Trap trap;
     private boolean freeze;
@@ -18,10 +19,12 @@ public class Player extends GameObject{
     private int musicBoxes;
 
 
-    public Player(){
+    public Player(String name){
         super(PLAYER_TEXTURE);
         movementSpeed = 1;
+        musicBoxes = 0;
         words = new ArrayList();
+        this.name = name;
     }
 
     public void move(){
@@ -36,16 +39,7 @@ public class Player extends GameObject{
         this.movementSpeed = movementSpeed;
     }
 
-    /*
-    public void pickUp(Pickable pickable){
-        if(pickable instanceof PowerUp){
-            this.powerUp = (PowerUp) pickable;
-        }
-        else {this.trap = (Trap) pickable;
-        }
 
-    }
- */
 
     public void storeWord(Words words){
         this.words.add(words);
@@ -99,6 +93,14 @@ public class Player extends GameObject{
 
     public void setMusicBoxes(){
         this.musicBoxes++;
+    }
+
+    public int getMusicBoxes(){
+        return this.musicBoxes;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
 }
