@@ -34,7 +34,7 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 public class GameScreen implements Screen {
 
     public static final int TRAVEL_DISTANCE = 200;
-    private final int MAX_BOXES = 4;
+    private final int MAX_BOXES = 1;
     public static final int X_SCREENLIMIT = 800;
     public static final int Y_SCREENLIMIT = 480;
     public static final int SPRITESIZE = 64;
@@ -74,7 +74,7 @@ public class GameScreen implements Screen {
         powerUps.add(new DoubleSpeed());
 
         musicBoxes = new Array<>();
-        musicBoxes.add(new MusicBox());
+
 
         bgm = Gdx.audio.newMusic(Gdx.files.internal("gamebgm.mp3"));
         bgm.setLooping(true);
@@ -140,13 +140,14 @@ public class GameScreen implements Screen {
                 musicBox.getSound().play();
                 musicBoxIterator.remove();
                 player1.setMusicBoxes();
+                musicBoxes.add(new MusicBox());
             }
 
             if (musicBox.overlaps(player2)) {
                 player2.setMusicBoxes();
                 musicBox.getSound().play();
                 musicBoxIterator.remove();
-
+                musicBoxes.add(new MusicBox());
             }
         }
 
@@ -201,7 +202,7 @@ public class GameScreen implements Screen {
                 }
             }
         }
-        if (musicBoxes.isEmpty()) {
+        if (player1.getMusicBoxes() > 20 || player2.getMusicBoxes() >20) {
             game.setScreen(new WinningScreen(game,getWinningPlayer()));
             dispose();
         }
