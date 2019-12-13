@@ -1,44 +1,51 @@
 package nl.codeforall.cannabits.teamsweat.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import nl.codeforall.cannabits.teamsweat.game.TheSWEAtProject;
+
+import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.X_SCREENLIMIT;
+import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.Y_SCREENLIMIT;
 
 public class MainMenuScreen implements Screen {
 
-    final LyricsFinder game;
+    final TheSWEAtProject game;
+    private Music bgm;
 
-    OrthographicCamera camera;
+    private OrthographicCamera camera;
+    private TextureRegion backgroundTexture;
 
-    public MainMenuScreen(final LyricsFinder game) {
+    public MainMenuScreen(final TheSWEAtProject game) {
         this.game = game;
-
+        backgroundTexture = new TextureRegion(new Texture("title-screen.png"), 0, 0, X_SCREENLIMIT, Y_SCREENLIMIT);
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("mainbgm.mp3"));
+        bgm.setLooping(true);
     }
 
     @Override
     public void show() {
-
+        bgm.play();
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0.412f, 0.71f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Welcome to Lyrics main menu Finder!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin! it's so pretty and pink", 100, 100);
+        game.batch.draw(backgroundTexture, 0, 0);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)) {
             game.setScreen(new GameScreen(game));
             dispose();
         }
@@ -66,6 +73,6 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        bgm.dispose();
     }
 }

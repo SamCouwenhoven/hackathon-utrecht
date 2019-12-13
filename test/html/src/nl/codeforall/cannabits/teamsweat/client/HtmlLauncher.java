@@ -3,7 +3,6 @@ package nl.codeforall.cannabits.teamsweat.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import nl.codeforall.cannabits.teamsweat.MyGdxGame;
 
 public class HtmlLauncher extends GwtApplication {
 

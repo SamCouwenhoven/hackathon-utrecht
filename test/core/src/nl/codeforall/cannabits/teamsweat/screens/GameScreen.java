@@ -1,22 +1,17 @@
 package nl.codeforall.cannabits.teamsweat.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.TimeUtils;
-import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import nl.codeforall.cannabits.teamsweat.game.TheSWEAtProject;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
-import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapType;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
@@ -25,8 +20,6 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
-
-import java.sql.Time;
 import java.util.Iterator;
 
 import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
@@ -34,10 +27,10 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 public class GameScreen implements Screen {
 
     public static final int TRAVEL_DISTANCE = 200;
-    private final int MAX_BOXES = 4;
+    private final int MAX_BOXES = 1;
     public static final int X_SCREENLIMIT = 800;
     public static final int Y_SCREENLIMIT = 480;
-    public static final int SPRITESIZE = 64;
+    public static final int SPRITESIZE = 32;
     private float timeSeconds = 0f;
     private float period = 6f;
 
@@ -46,25 +39,35 @@ public class GameScreen implements Screen {
 
     private Array<MusicBox> musicBoxes;
 
-    private LyricsFinder game;
+    private TheSWEAtProject game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
     private Music bgm;
     private TextureRegion backgroundTexture;
-
     private Array<PowerUp> powerUps;
     private long lastTrapDropTime;
     private long lastPowerUpDropTime;
     private long lastMusicBoxDropTime;
 
-    public GameScreen(final LyricsFinder game) {
+    public GameScreen(final TheSWEAtProject game) {
         this.game = game;
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, X_SCREENLIMIT, Y_SCREENLIMIT);
 
-        player1 = new Player("Player 1");
-        player2 = new Player("Player 2");
+        player1 = new Player("Player 1", new Texture(Gdx.files.internal("player1/1_single_down.png")));
+        player2 = new Player("Player 2", new Texture(Gdx.files.internal("player2/2_single_down.png")));
+
+
+        player1.setTextureDown(new Texture(Gdx.files.internal("player1/1_single_down.png")));
+        player1.setTextureUp(new Texture(Gdx.files.internal("player1/1_single_up.png")));
+        player1.setTextureLeft(new Texture(Gdx.files.internal("player1/1_single_left.png")));
+        player1.setTextureRight(new Texture(Gdx.files.internal("player1/1_single_right.png")));
+
+        player2.setTextureDown(new Texture(Gdx.files.internal("player2/2_single_down.png")));
+        player2.setTextureUp(new Texture(Gdx.files.internal("player2/2_single_up.png")));
+        player2.setTextureLeft(new Texture(Gdx.files.internal("player2/2_single_left.png")));
+        player2.setTextureRight(new Texture(Gdx.files.internal("player2/2_single_right.png")));
 
         traps = new Array<>();
         traps.add(new FreezeTrap());
@@ -74,7 +77,7 @@ public class GameScreen implements Screen {
         powerUps.add(new DoubleSpeed());
 
         musicBoxes = new Array<>();
-        musicBoxes.add(new MusicBox());
+
 
         bgm = Gdx.audio.newMusic(Gdx.files.internal("gamebgm.mp3"));
         bgm.setLooping(true);
@@ -90,7 +93,7 @@ public class GameScreen implements Screen {
     }
 
     private void spawnTrap(){
-        int random = (int) (Math.random() * PowerUpType.values().length);
+        int random = (int) (Math.random() * TrapType.values().length);
         traps.add(TrapFactory.getTrap(TrapType.values()[random]));
         lastTrapDropTime = TimeUtils.nanoTime();
     }
@@ -109,49 +112,44 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0.412f, 0.71f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-
-
         game.batch.begin();// draw in here
         game.batch.draw(backgroundTexture, 0, 0);
-        game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
         game.batch.draw(player1.getImage(), player1.getX(), player1.getY());
         game.batch.draw(player2.getImage(), player2.getX(), player2.getY());
+        game.font.draw(game.batch, "Player 1: " + player1.getMusicBoxes(), 0, 470);
+        game.font.draw(game.batch, "Player 2: " + player2.getMusicBoxes(), 0, 440);
+
         for (Trap trap : traps) {
             game.batch.draw(trap.getImage(), trap.getX(), trap.getY());
         }
+
         for (PowerUp powerUp : powerUps) {
             game.batch.draw(powerUp.getImage(), powerUp.getX(), powerUp.getY());
         }
 
-        for (MusicBox musicBox : musicBoxes
-        ) {
+        for (MusicBox musicBox : musicBoxes) {
             game.batch.draw(musicBox.getImage(), musicBox.x, musicBox.y);}
 
         Iterator<MusicBox> musicBoxIterator = musicBoxes.iterator();
         while (musicBoxIterator.hasNext()) {
             MusicBox musicBox = musicBoxIterator.next();
             if (musicBox.overlaps(player1)) {
-                musicBox.getSound().play();
-                musicBoxIterator.remove();
                 player1.setMusicBoxes();
+                musicBox.getSound().play();
+                musicBoxes.add(new MusicBox());
+                musicBoxIterator.remove();
             }
 
             if (musicBox.overlaps(player2)) {
                 player2.setMusicBoxes();
                 musicBox.getSound().play();
+                musicBoxes.add(new MusicBox());
                 musicBoxIterator.remove();
-
             }
         }
-
-
-        game.batch.end();
 
         timeSeconds +=Gdx.graphics.getRawDeltaTime();
         if(timeSeconds > period){
@@ -176,6 +174,7 @@ public class GameScreen implements Screen {
             }
 
         }
+        game.batch.end();
 
         Iterator<Trap> trapIterator = traps.iterator();
         while (trapIterator.hasNext()) {
@@ -185,7 +184,7 @@ public class GameScreen implements Screen {
             }
             if (trap.isArmed()) {
                 if (player1.overlaps(trap)) {
-                    player1.setStatus( trap.spring() );
+                    player1.setStatus( trap.spring());
                     trapIterator.remove();
                 }
                 if (player2.overlaps(trap)) {
@@ -201,19 +200,28 @@ public class GameScreen implements Screen {
                 }
             }
         }
-        if (musicBoxes.isEmpty()) {
+        if (player1.getMusicBoxes() > 20 || player2.getMusicBoxes() >20) {
             game.setScreen(new WinningScreen(game,getWinningPlayer()));
             dispose();
         }
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
 
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.O,Input.Keys.P);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.R,Input.Keys.T);
 
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
+        if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
+            Boolean fullScreen = Gdx.graphics.isFullscreen();
+            Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+            if (fullScreen) {
+                Gdx.graphics.setWindowedMode(currentMode.width, currentMode.height);
+            } else {
+                Gdx.graphics.setFullscreenMode(currentMode);
+            }
+        }
+
         if(TimeUtils.nanoTime() - lastPowerUpDropTime > 1900000000){
             spawnPowerUp();
         }
+
         if(TimeUtils.nanoTime() - lastTrapDropTime > 2000000000){
             spawnTrap();
         }
@@ -297,6 +305,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        bgm.dispose();
     }
 }
