@@ -40,10 +40,6 @@ public class WinningScreen implements Screen {
         game.font.draw(game.batch, player.getName() + " Won", 237, 240);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game));
-            dispose();
-        }
     }
 
     @Override
