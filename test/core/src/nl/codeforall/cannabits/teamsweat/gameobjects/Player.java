@@ -38,11 +38,6 @@ public class Player extends GameObject{
     private Texture textureLeft;
     private Texture textureRight;
 
-    private Animation<TextureRegion> textureAnimationDown;
-    private Animation<TextureRegion> textureAnimationUp;
-    private Animation<TextureRegion> textureAnimationLeft;
-    private Animation<TextureRegion> textureAnimationRight;
-
     public Player(String name, Texture playerTexture){
         super(playerTexture);
         movementSpeed = 1;
@@ -53,19 +48,22 @@ public class Player extends GameObject{
     }
 
     public void moveLeft(){
+        super.setImage(textureLeft);
         x -= GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
-
     }
 
     public void moveRight(){
+        super.setImage(textureRight);
         x += GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
     }
 
     public void moveUp(){
+        super.setImage(textureUp);
         y += GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
     }
 
     public void moveDown(){
+        super.setImage(textureDown);
         y -= GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
     }
 

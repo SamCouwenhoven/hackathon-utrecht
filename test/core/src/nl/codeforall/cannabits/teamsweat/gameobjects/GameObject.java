@@ -18,4 +18,8 @@ public abstract class GameObject extends Rectangle {
     public Texture getImage() {
         return image;
     }
+
+    public void setImage(Texture texture){
+        this.image = texture;
+    }
 }
