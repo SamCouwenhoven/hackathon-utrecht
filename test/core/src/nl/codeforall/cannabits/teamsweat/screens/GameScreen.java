@@ -63,8 +63,17 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, X_SCREENLIMIT, Y_SCREENLIMIT);
 
-        player1 = new Player("Player 1");
-        player2 = new Player("Player 2");
+        player1 = new Player("Player 1", new Texture(Gdx.files.internal("player1/1_down.png")));
+        player2 = new Player("Player 2", new Texture(Gdx.files.internal("player2/2_down.png")));
+
+        player1.setTextureUp(new Texture(Gdx.files.internal("player1/1_up.png")));
+        player1.setTextureLeft(new Texture(Gdx.files.internal("player1/1_left.png")));
+        player1.setTextureRight(new Texture(Gdx.files.internal("player1/1_right.png")));
+
+        player2.setTextureUp(new Texture(Gdx.files.internal("player2/2_up.png")));
+        player2.setTextureLeft(new Texture(Gdx.files.internal("player2/2_left.png")));
+        player2.setTextureRight(new Texture(Gdx.files.internal("player2/2_right.png")));
+
 
         traps = new Array<>();
         traps.add(new FreezeTrap());

@@ -2,6 +2,8 @@ package nl.codeforall.cannabits.teamsweat.gameobjects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.Default;
 import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.DoubleSpeed;
 import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.Frozen;
@@ -21,19 +23,28 @@ public class Player extends GameObject{
 
     private final int POWERUP_DURATION = 5;
 
-
+    private final int FRAME_COLS = 4;
+    private final int FRAME_ROWS = 1;
     private float poweredUptime = 0f;
     private PowerUp powerUp;
     private PlayerStatus status;
     private Trap trap;
     private int movementSpeed;
     private ArrayList words;
-    private static Texture PLAYER_TEXTURE = new Texture(Gdx.files.internal("example/droplet.png"));
     private int musicBoxes;
 
+    private Texture textureDown;
+    private Texture textureUp;
+    private Texture textureLeft;
+    private Texture textureRight;
 
-    public Player(String name){
-        super(PLAYER_TEXTURE);
+    private Animation<TextureRegion> textureAnimationDown;
+    private Animation<TextureRegion> textureAnimationUp;
+    private Animation<TextureRegion> textureAnimationLeft;
+    private Animation<TextureRegion> textureAnimationRight;
+
+    public Player(String name, Texture playerTexture){
+        super(playerTexture);
         movementSpeed = 1;
         musicBoxes = 0;
         words = new ArrayList();
@@ -43,6 +54,7 @@ public class Player extends GameObject{
 
     public void moveLeft(){
         x -= GameScreen.TRAVEL_DISTANCE * getMovementSpeed() * Gdx.graphics.getDeltaTime();
+
     }
 
     public void moveRight(){
@@ -121,4 +133,19 @@ public class Player extends GameObject{
         status = DEFAULT_PLAYER_STATUS;
     }
 
+    public void setTextureDown(Texture textureDown) {
+        this.textureDown = textureDown;
+    }
+
+    public void setTextureUp(Texture textureUp) {
+        this.textureUp = textureUp;
+    }
+
+    public void setTextureLeft(Texture textureLeft) {
+        this.textureLeft = textureLeft;
+    }
+
+    public void setTextureRight(Texture textureRight) {
+        this.textureRight = textureRight;
+    }
 }
