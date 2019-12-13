@@ -3,19 +3,18 @@ package nl.codeforall.cannabits.teamsweat.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
+import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
 import java.util.Iterator;
+import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 
 public class GameScreen implements Screen {
 
@@ -27,9 +26,12 @@ public class GameScreen implements Screen {
     private Player player1;
     private Player player2;
 
+    private Array<MusicBox> musicBoxes;
+
     private LyricsFinder game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
+    private Array<PowerUp> powerUps;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -42,6 +44,12 @@ public class GameScreen implements Screen {
 
         traps = new Array<>();
         traps.add(new FreezeTrap());
+
+        powerUps = new Array<>();
+        powerUps.add(new DoubleSpeed());
+
+        musicBoxes = new Array<>();
+        musicBoxes.add(new MusicBox());
 
 
     }
@@ -61,71 +69,79 @@ public class GameScreen implements Screen {
 
         game.batch.begin();// draw in here
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
-        game.batch.draw(player1.getImage(), player1.x, player1.y);
-        game.batch.draw(player2.getImage(), player2.x, player2.y);
+        game.batch.draw(player1.getImage(), player1.getX(), player1.getY());
+        game.batch.draw(player2.getImage(), player2.getX(), player2.getY());
         for (Trap trap: traps) {
-            game.batch.draw(trap.getImage(), trap.x, trap.y);
+            game.batch.draw(trap.getImage(), trap.getX(), trap.getY());
+        }
+        for (PowerUp powerUp: powerUps) {
+            game.batch.draw(powerUp.getImage(), powerUp.getX(), powerUp.getY());
+        }
+
+        for (MusicBox musicBox :musicBoxes
+        ) {game.batch.draw(musicBox.getImage(),musicBox.x,musicBox.y);
+
+        }
+
+        Iterator<MusicBox> musicBoxIterator = musicBoxes.iterator();
+        while (musicBoxIterator.hasNext()) {
+            MusicBox musicBox = musicBoxIterator.next();
+            if (musicBox.overlaps(player1) || musicBox.overlaps(player2)) {
+                musicBox.getSound().play();
+                musicBoxIterator.remove();
+            }
         }
         game.batch.end();
 
-        Iterator<Trap> iter = traps.iterator();
-        while (iter.hasNext()) {
-            Trap trap = iter.next();
+        Iterator<PowerUp> powerUpIterator = powerUps.iterator();
+        while (powerUpIterator.hasNext()) {
+            PowerUp powerUp = powerUpIterator.next();
+
+            if (player1.overlaps(powerUp)){
+                player1.setPowerUp(powerUp);
+            }
+            if (player2.overlaps(powerUp)){
+                player2.setPowerUp(powerUp);
+            }
+
+            if (powerUp.isPickedUp()) {
+                powerUpIterator.remove();
+            }
+
+        }
+
+        Iterator<Trap> trapIterator = traps.iterator();
+        while (trapIterator.hasNext()) {
+            Trap trap = trapIterator.next();
             if (trap.isPickedUp() && !trap.isArmed()) {
-                iter.remove();
+                trapIterator.remove();
             }
             if (trap.isArmed()) {
                 if (player1.overlaps(trap)) {
                     trap.spring();
-                    iter.remove();
+                    trapIterator.remove();
                 }
                 if (player2.overlaps(trap)) {
                     trap.spring();
-                    iter.remove();
+                    trapIterator.remove();
                 }
             }else{
                 if (player1.overlaps(trap)){
-                    player1.addTrap(trap);
+                    player1.setTrap(trap);
                 }
                 if (player2.overlaps(trap)){
-                    player2.addTrap(trap);
+                    player2.setTrap(trap);
                 }
             }
         }
 
-        /*
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            player1.x -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            player1.x += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            player1.y -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            player1.y += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-
-         */
-
-
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT);
-
-
-
-
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
 
     }
 
-    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap){
-        /*
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            player.x += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        */
+    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap,int usePowerUp){
+
 
         if(Gdx.input.isKeyPressed(left)) {
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
@@ -143,6 +159,12 @@ public class GameScreen implements Screen {
             Trap trap = player.placeTrap();
             if (trap != null){
                 traps.add(trap);
+            }
+        }
+        if(Gdx.input.isKeyPressed(usePowerUp)) {
+            PowerUp powerUp;
+            if ((powerUp = player.getPowerUp()) != null){
+                player.usePowerUp();
             }
         }
 
