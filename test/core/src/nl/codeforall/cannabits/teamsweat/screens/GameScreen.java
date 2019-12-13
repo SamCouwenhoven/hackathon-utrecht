@@ -3,10 +3,12 @@ package nl.codeforall.cannabits.teamsweat.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
@@ -30,6 +32,9 @@ public class GameScreen implements Screen {
     private LyricsFinder game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
+    private Music bgm;
+    private TextureRegion backgroundTexture;
+
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -42,13 +47,16 @@ public class GameScreen implements Screen {
 
         traps = new Array<>();
         traps.add(new FreezeTrap());
+        backgroundTexture = new TextureRegion(new Texture("gamemap.png"), 0, 0, X_SCREENLIMIT, Y_SCREENLIMIT);
 
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("gamebgm.mp3"));
+        bgm.setLooping(true);
 
     }
 
     @Override
     public void show() {
-
+        bgm.play();
     }
 
     @Override
@@ -60,12 +68,14 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();// draw in here
+        game.batch.draw(backgroundTexture, 0, 0);
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
         game.batch.draw(player1.getImage(), player1.x, player1.y);
         game.batch.draw(player2.getImage(), player2.x, player2.y);
         for (Trap trap: traps) {
             game.batch.draw(trap.getImage(), trap.x, trap.y);
         }
+
         game.batch.end();
 
         Iterator<Trap> iter = traps.iterator();
@@ -93,39 +103,13 @@ public class GameScreen implements Screen {
             }
         }
 
-        /*
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            player1.x -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            player1.x += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            player1.y -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            player1.y += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-
-         */
-
-
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT);
         setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT);
-
-
-
-
 
     }
 
     private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap){
-        /*
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-            player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-            player.x += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-            player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
-        */
+
 
         if(Gdx.input.isKeyPressed(left)) {
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
