@@ -116,7 +116,7 @@ public class GameScreen implements Screen {
         }
 
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TABx§);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
 
     }
 
