@@ -90,7 +90,7 @@ public class GameScreen implements Screen {
     }
 
     private void spawnTrap(){
-        int random = (int) (Math.random() * PowerUpType.values().length);
+        int random = (int) (Math.random() * TrapType.values().length);
         traps.add(TrapFactory.getTrap(TrapType.values()[random]));
         lastTrapDropTime = TimeUtils.nanoTime();
     }
