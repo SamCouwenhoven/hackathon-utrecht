@@ -1,5 +1,6 @@
 package nl.codeforall.cannabits.teamsweat.gameobjects.traps;
 
+import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.gameobjects.GameObject;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
@@ -8,6 +9,10 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.Useable;
 public abstract class Trap extends GameObject implements Pickable, Useable {
 
     protected Player player;
+
+    public Trap(Texture image) {
+        super(image);
+    }
 
 
     @Override

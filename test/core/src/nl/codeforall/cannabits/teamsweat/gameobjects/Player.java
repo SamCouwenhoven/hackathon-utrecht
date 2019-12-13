@@ -1,5 +1,6 @@
 package nl.codeforall.cannabits.teamsweat.gameobjects;
 
+import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
@@ -14,8 +15,8 @@ public class Player extends GameObject{
     private ArrayList words;
 
 
-    public Player(){
-        super();
+    public Player(Texture image){
+        super(image);
         movementSpeed = 1;
         words = new ArrayList();
     }
