@@ -10,17 +10,29 @@ public class Player extends GameObject{
     private PowerUp powerUp;
     private Trap trap;// its a trap
     private boolean freeze;
+    private int movementSpeed;
     private ArrayList words;
 
 
     public Player(){
+        super();
+        movementSpeed = 1;
         words = new ArrayList();
     }
 
     public void move(){
 
     }
-/*
+
+    public int getMovementSpeed() {
+        return movementSpeed;
+    }
+
+    public void setMovementSpeed(int movementSpeed) {
+        this.movementSpeed = movementSpeed;
+    }
+
+    /*
     public void pickUp(Pickable pickable){
         if(pickable instanceof PowerUp){
             this.powerUp = (PowerUp) pickable;
