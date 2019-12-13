@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class GameScreen implements Screen {
 
@@ -19,20 +23,24 @@ public class GameScreen implements Screen {
     private Player player1;
     private Player player2;
 
+    private ArrayList<MusicBox> musicBoxes;
+
     //TODO: remove placeholder
     private Texture playerPlaceHolder;
+    private Texture musicPlaceHolder;
 
     private LyricsFinder game;
     private OrthographicCamera camera;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
-
+        musicBoxes = new ArrayList<MusicBox>();
         camera = new OrthographicCamera();
         camera.setToOrtho(false, X_SCREENLIMIT, Y_SCREENLIMIT);
 
         //TODO: remove placeholder
         playerPlaceHolder = new Texture(Gdx.files.internal("example/droplet.png"));
+        musicPlaceHolder = new Texture(Gdx.files.internal("musicboxes/73687619-icon-music-box-scaled.png"));
 
 
         player1 = new Player();
@@ -45,6 +53,15 @@ public class GameScreen implements Screen {
         player2.y = 20;
         player2.width = SPRITESIZE;
         player2.height = SPRITESIZE;
+
+
+        for (int i = 0; i<15; i++){
+        musicBoxes.add(new MusicBox());
+        musicBoxes.get(i).x = (float) (Math.random() * X_SCREENLIMIT + 1);
+        musicBoxes.get(i).y = (float) (Math.random() * Y_SCREENLIMIT + 1);
+        musicBoxes.get(i).width = SPRITESIZE;
+        musicBoxes.get(i).height = SPRITESIZE;
+        }
 
     }
 
@@ -65,7 +82,34 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
         game.batch.draw(playerPlaceHolder, player1.x, player1.y);
         game.batch.draw(playerPlaceHolder, player2.x, player2.y);
+
+        for (MusicBox musicBox :musicBoxes
+             ) {game.batch.draw(musicPlaceHolder,musicBox.x,musicBox.y);
+            
+        }
+
+        Iterator<MusicBox> iter = musicBoxes.iterator();
+        while (iter.hasNext()) {
+            MusicBox musicBox = iter.next();
+            if (musicBox.overlaps(player1) || musicBox.overlaps(player2)) {
+                musicBox.getSound().play();
+                iter.remove();
+            }
+        }
+
+        for (MusicBox musicBox :musicBoxes
+        ) {
+            if (musicBox.overlaps(player1) || musicBox.overlaps(player2)){
+            musicBoxes.remove(musicBox);
+        }
+
+        }
         game.batch.end();
+
+
+
+
+
         /*
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
             player1.x -= TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
