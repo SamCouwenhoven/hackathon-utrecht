@@ -3,15 +3,13 @@ package nl.codeforall.cannabits.teamsweat.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
+import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
@@ -30,6 +28,7 @@ public class GameScreen implements Screen {
     private LyricsFinder game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
+    private Array<PowerUp> powerUps;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -42,6 +41,9 @@ public class GameScreen implements Screen {
 
         traps = new Array<>();
         traps.add(new FreezeTrap());
+
+        powerUps = new Array<>();
+        powerUps.add(new DoubleSpeed());
 
 
     }
@@ -61,12 +63,32 @@ public class GameScreen implements Screen {
 
         game.batch.begin();// draw in here
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
-        game.batch.draw(player1.getImage(), player1.x, player1.y);
-        game.batch.draw(player2.getImage(), player2.x, player2.y);
+        game.batch.draw(player1.getImage(), player1.getX(), player1.getY());
+        game.batch.draw(player2.getImage(), player2.getX(), player2.getY());
         for (Trap trap: traps) {
-            game.batch.draw(trap.getImage(), trap.x, trap.y);
+            game.batch.draw(trap.getImage(), trap.getX(), trap.getY());
+        }
+        for (PowerUp powerUp: powerUps) {
+            game.batch.draw(powerUp.getImage(), powerUp.getX(), powerUp.getY());
         }
         game.batch.end();
+
+        Iterator<PowerUp> powerUpIterator = powerUps.iterator();
+        while (powerUpIterator.hasNext()) {
+            PowerUp powerUp = powerUpIterator.next();
+
+            if (player1.overlaps(powerUp)){
+                player1.setPowerUp(powerUp);
+            }
+            if (player2.overlaps(powerUp)){
+                player2.setPowerUp(powerUp);
+            }
+
+            if (powerUp.isPickedUp()) {
+                powerUpIterator.remove();
+            }
+
+        }
 
         Iterator<Trap> iter = traps.iterator();
         while (iter.hasNext()) {
@@ -85,10 +107,10 @@ public class GameScreen implements Screen {
                 }
             }else{
                 if (player1.overlaps(trap)){
-                    player1.addTrap(trap);
+                    player1.setTrap(trap);
                 }
                 if (player2.overlaps(trap)){
-                    player2.addTrap(trap);
+                    player2.setTrap(trap);
                 }
             }
         }
@@ -106,8 +128,8 @@ public class GameScreen implements Screen {
          */
 
 
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT);
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
 
 
 
@@ -115,7 +137,7 @@ public class GameScreen implements Screen {
 
     }
 
-    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap){
+    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap,int usePowerUp){
         /*
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
@@ -143,6 +165,12 @@ public class GameScreen implements Screen {
             Trap trap = player.placeTrap();
             if (trap != null){
                 traps.add(trap);
+            }
+        }
+        if(Gdx.input.isKeyPressed(usePowerUp)) {
+            PowerUp powerUp;
+            if ((powerUp = player.getPowerUp()) != null){
+                player.usePowerUp();
             }
         }
 
