@@ -3,11 +3,16 @@ package nl.codeforall.cannabits.teamsweat.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
@@ -37,6 +42,9 @@ public class GameScreen implements Screen {
     private LyricsFinder game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
+    private Music bgm;
+    private TextureRegion backgroundTexture;
+
     private Array<PowerUp> powerUps;
     private long lastTrapDropTime;
     private long lastPowerUpDropTime;
@@ -52,6 +60,7 @@ public class GameScreen implements Screen {
 
         traps = new Array<>();
         traps.add(new FreezeTrap());
+        backgroundTexture = new TextureRegion(new Texture("gamemap.png"), 0, 0, X_SCREENLIMIT, Y_SCREENLIMIT);
 
         powerUps = new Array<>();
         powerUps.add(new DoubleSpeed());
@@ -59,6 +68,8 @@ public class GameScreen implements Screen {
         musicBoxes = new Array<>();
         musicBoxes.add(new MusicBox());
 
+        bgm = Gdx.audio.newMusic(Gdx.files.internal("gamebgm.mp3"));
+        bgm.setLooping(true);
         spawnPowerUp();
         spawnTrap();
 
@@ -77,7 +88,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-
+        bgm.play();
     }
 
     @Override
@@ -89,6 +100,7 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();// draw in here
+        game.batch.draw(backgroundTexture, 0, 0);
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
         game.batch.draw(player1.getImage(), player1.getX(), player1.getY());
         game.batch.draw(player2.getImage(), player2.getX(), player2.getY());
