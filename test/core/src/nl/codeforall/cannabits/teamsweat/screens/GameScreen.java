@@ -1,6 +1,7 @@
 package nl.codeforall.cannabits.teamsweat.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -220,15 +221,24 @@ public class GameScreen implements Screen {
             game.setScreen(new WinningScreen(game,getWinningPlayer()));
             dispose();
         }
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
-
 
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
-        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.R,Input.Keys.T);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
+            Boolean fullScreen = Gdx.graphics.isFullscreen();
+            Graphics.DisplayMode currentMode = Gdx.graphics.getDisplayMode();
+            if (fullScreen) {
+                Gdx.graphics.setWindowedMode(currentMode.width, currentMode.height);
+            } else {
+                Gdx.graphics.setFullscreenMode(currentMode);
+            }
+        }
+
         if(TimeUtils.nanoTime() - lastPowerUpDropTime > 1900000000){
             spawnPowerUp();
         }
+
         if(TimeUtils.nanoTime() - lastTrapDropTime > 2000000000){
             spawnTrap();
         }
