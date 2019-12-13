@@ -1,27 +1,37 @@
 package nl.codeforall.cannabits.teamsweat.gameobjects.powerups;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.gameobjects.GameObject;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
+import nl.codeforall.cannabits.teamsweat.gameobjects.playerstates.PlayerStatus;
 
-public abstract class PowerUp extends GameObject implements Pickable{
+public abstract class PowerUp extends GameObject {
 
-    public PowerUp(Texture image) {
+    private boolean picked;
+    private Sound activationSound;
+
+    public PowerUp(Texture image,Sound activationSound) {
         super(image);
+        this.activationSound = activationSound;
+        picked = false;
     }
 
-    @Override
     public void pickedUp() {
         //add to player
+        picked = true;
 
 
     }
 
-    @Override
-    public void use() {
+    public PlayerStatus use() {
+        activationSound.play();
         //remove from inventory
+        return Player.DEFAULT_PLAYER_STATUS;
+    }
 
+    public boolean isPickedUp() {
+        return picked;
     }
 
 
