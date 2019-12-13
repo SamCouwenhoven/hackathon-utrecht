@@ -15,6 +15,7 @@ public class Player extends GameObject{
     private int movementSpeed;
     private ArrayList words;
     private static Texture PLAYER_TEXTURE = new Texture(Gdx.files.internal("example/droplet.png"));
+    private int musicBoxes;
 
 
     public Player(){
@@ -50,22 +51,30 @@ public class Player extends GameObject{
         this.words.add(words);
     }
 
-    public void addPowerUp(PowerUp powerUp) {
+    public void setPowerUp(PowerUp powerUp) {
         this.powerUp = powerUp;
+        powerUp.pickedUp();
     }
 
     public void removePowerUp() {
         this.powerUp = null;
     }
 
-    public void addTrap(Trap trap) {
+    public void setTrap(Trap trap) {
         //sets the inventory trap
         this.trap = trap;
         trap.pickedUp();
     }
 
-    public void usePowerUp(){
+    public PowerUp getPowerUp() {
+        return powerUp;
+    }
 
+    public void usePowerUp(){
+        if (powerUp != null) {
+            powerUp.use();
+            powerUp = null;
+        }
     }
 
     public Trap placeTrap(){
@@ -86,6 +95,10 @@ public class Player extends GameObject{
 
     public void setFire(){
         //inverted controls, triple speed
+    }
+
+    public void setMusicBoxes(){
+        this.musicBoxes++;
     }
 
 }
