@@ -4,11 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import nl.codeforall.cannabits.teamsweat.game.TheSWEAtProject;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
 
 import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.X_SCREENLIMIT;
@@ -16,14 +15,14 @@ import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.Y_SCREENLIMIT
 
 public class WinningScreen implements Screen {
 
-    final LyricsFinder game;
+    final TheSWEAtProject game;
     private Player player;
     private Music bgm;
     private TextureRegion backgroundTexture;
 
     private OrthographicCamera camera;
 
-    public WinningScreen(LyricsFinder game, Player player) {
+    public WinningScreen(TheSWEAtProject game, Player player) {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);

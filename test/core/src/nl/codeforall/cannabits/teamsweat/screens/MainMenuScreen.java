@@ -4,24 +4,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import nl.codeforall.cannabits.teamsweat.game.TheSWEAtProject;
 
 import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.X_SCREENLIMIT;
 import static nl.codeforall.cannabits.teamsweat.screens.GameScreen.Y_SCREENLIMIT;
 
 public class MainMenuScreen implements Screen {
 
-    final LyricsFinder game;
+    final TheSWEAtProject game;
     private Music bgm;
 
     private OrthographicCamera camera;
     private TextureRegion backgroundTexture;
 
-    public MainMenuScreen(final LyricsFinder game) {
+    public MainMenuScreen(final TheSWEAtProject game) {
         this.game = game;
         backgroundTexture = new TextureRegion(new Texture("title-screen.png"), 0, 0, X_SCREENLIMIT, Y_SCREENLIMIT);
         camera = new OrthographicCamera();

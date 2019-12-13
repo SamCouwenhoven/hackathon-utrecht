@@ -5,13 +5,12 @@ import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
+import nl.codeforall.cannabits.teamsweat.game.TheSWEAtProject;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
 import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
@@ -40,7 +39,7 @@ public class GameScreen implements Screen {
 
     private Array<MusicBox> musicBoxes;
 
-    private LyricsFinder game;
+    private TheSWEAtProject game;
     private OrthographicCamera camera;
     private Array<Trap> traps;
     private Music bgm;
@@ -50,7 +49,7 @@ public class GameScreen implements Screen {
     private long lastPowerUpDropTime;
     private long lastMusicBoxDropTime;
 
-    public GameScreen(final LyricsFinder game) {
+    public GameScreen(final TheSWEAtProject game) {
         this.game = game;
 
         camera = new OrthographicCamera();
@@ -113,15 +112,11 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0.412f, 0.71f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();// draw in here
         game.batch.draw(backgroundTexture, 0, 0);
-        game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
         game.batch.draw(player1.getImage(), player1.getX(), player1.getY());
         game.batch.draw(player2.getImage(), player2.getX(), player2.getY());
         game.font.draw(game.batch, "Player 1: " + player1.getMusicBoxes(), 0, 470);
@@ -210,7 +205,7 @@ public class GameScreen implements Screen {
             dispose();
         }
 
-        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.O,Input.Keys.P);
         setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.R,Input.Keys.T);
 
         if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
