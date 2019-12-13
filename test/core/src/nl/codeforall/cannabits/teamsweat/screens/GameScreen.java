@@ -5,18 +5,22 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
 
 public class GameScreen implements Screen {
 
     private final int TRAVEL_DISTANCE = 200;
-    private final int X_SCREENLIMIT = 500;
-    private final int Y_SCREENLIMIT = 150;
+    private final int X_SCREENLIMIT = 800;
+    private final int Y_SCREENLIMIT = 480;
     private final int SPRITESIZE = 64;
 
     private Player player1;
     private Player player2;
+
+    //TODO: remove placeholder
+    private Texture playerPlaceHolder;
 
     private LyricsFinder game;
     private OrthographicCamera camera;
@@ -25,10 +29,23 @@ public class GameScreen implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1000, 600);
+        camera.setToOrtho(false, X_SCREENLIMIT, Y_SCREENLIMIT);
+
+        //TODO: remove placeholder
+        playerPlaceHolder = new Texture(Gdx.files.internal("example/droplet.png"));
+
 
         player1 = new Player();
+        player1.x = 500/2 - SPRITESIZE;
+        player1.y = 20;
+        player1.width = SPRITESIZE;
+        player1.height = SPRITESIZE;
         player2 = new Player();
+        player2.x = 200;
+        player2.y = 20;
+        player2.width = SPRITESIZE;
+        player2.height = SPRITESIZE;
+
     }
 
     @Override
@@ -45,7 +62,9 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();// draw in here
-        game.font.draw(game.batch, "this is the temp gamescreen ", 500, 150);
+        game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
+        game.batch.draw(playerPlaceHolder, player1.x, player1.y);
+        game.batch.draw(playerPlaceHolder, player2.x, player2.y);
         game.batch.end();
         /*
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
@@ -58,11 +77,13 @@ public class GameScreen implements Screen {
             player1.y += TRAVEL_DISTANCE * player1.getMovementSpeed() * Gdx.graphics.getDeltaTime();
 
          */
-        setPlayerControls(player1);
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D);
 
     }
 
-    private void setPlayerControls(Player player){
+    private void setPlayerControls(Player player, int up, int down, int left, int right){
+        /*
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
@@ -71,17 +92,26 @@ public class GameScreen implements Screen {
             player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         if(Gdx.input.isKeyPressed(Input.Keys.UP))
             player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
+        */
+
+        if(Gdx.input.isKeyPressed(left))
+            player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(right))
+            player.x += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(down))
+            player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
+        if(Gdx.input.isKeyPressed(up))
+            player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
 
         //Boundaries
-        if (player1.x < 0)
-            player1.x = 0;
-        if (player2.x < 0)
-            player2.x = 0;
-        if (player1.x > X_SCREENLIMIT-SPRITESIZE)
-            player1.x = X_SCREENLIMIT-SPRITESIZE;
-        if (player2.y > Y_SCREENLIMIT-SPRITESIZE)
-            player2.y = Y_SCREENLIMIT-SPRITESIZE;
-
+        if (player.x < 0)
+            player.x = 0;
+        if (player.y < 0)
+            player.y = 0;
+        if (player.x > X_SCREENLIMIT-SPRITESIZE)
+            player.x = X_SCREENLIMIT-SPRITESIZE;
+        if (player.y > Y_SCREENLIMIT-SPRITESIZE)
+            player.y = Y_SCREENLIMIT-SPRITESIZE;
     }
 
     @Override
