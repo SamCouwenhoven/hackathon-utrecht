@@ -11,16 +11,25 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.TimeUtils;
 import nl.codeforall.cannabits.teamsweat.game.LyricsFinder;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Pickable;
 import nl.codeforall.cannabits.teamsweat.gameobjects.Player;
-import nl.codeforall.cannabits.teamsweat.gameobjects.Words;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapType;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpFactory;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.PowerUpType;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapFactory;
+import nl.codeforall.cannabits.teamsweat.gameobjects.factories.TrapType;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.DoubleSpeed;
 import nl.codeforall.cannabits.teamsweat.gameobjects.powerups.PowerUp;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
-import java.util.ArrayList;
+import java.sql.Time;
 import java.util.Iterator;
 
 import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
@@ -28,6 +37,7 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 public class GameScreen implements Screen {
 
     private final int TRAVEL_DISTANCE = 200;
+    private final int MAX_BOXES = 4;
     public static final int X_SCREENLIMIT = 800;
     public static final int Y_SCREENLIMIT = 480;
     public static final int SPRITESIZE = 64;
@@ -44,6 +54,9 @@ public class GameScreen implements Screen {
     private TextureRegion backgroundTexture;
 
     private Array<PowerUp> powerUps;
+    private long lastTrapDropTime;
+    private long lastPowerUpDropTime;
+    private long lastMusicBoxDropTime;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -63,13 +76,31 @@ public class GameScreen implements Screen {
 
         musicBoxes = new Array<>();
         musicBoxes.add(new MusicBox());
-        musicBoxes.add(new MusicBox());
-        musicBoxes.add(new MusicBox());
-
 
         bgm = Gdx.audio.newMusic(Gdx.files.internal("gamebgm.mp3"));
         bgm.setLooping(true);
+        spawnPowerUp();
+        spawnTrap();
+        spawnMusicBox();
 
+    }
+    private void spawnPowerUp(){
+        int random = (int) (Math.random() * PowerUpType.values().length);
+        powerUps.add(PowerUpFactory.getPowerUp(PowerUpType.values()[random]));
+        lastPowerUpDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnTrap(){
+        int random = (int) (Math.random() * PowerUpType.values().length);
+        traps.add(TrapFactory.getTrap(TrapType.values()[random]));
+        lastTrapDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnMusicBox(){
+        if(musicBoxes.size < MAX_BOXES){
+            musicBoxes.add(new MusicBox());
+        }
+        lastMusicBoxDropTime = TimeUtils.nanoTime();
     }
 
     @Override
@@ -99,9 +130,7 @@ public class GameScreen implements Screen {
 
         for (MusicBox musicBox : musicBoxes
         ) {
-            game.batch.draw(musicBox.getImage(), musicBox.x, musicBox.y);
-
-        }
+            game.batch.draw(musicBox.getImage(), musicBox.x, musicBox.y);}
 
         Iterator<MusicBox> musicBoxIterator = musicBoxes.iterator();
         while (musicBoxIterator.hasNext()) {
@@ -174,32 +203,43 @@ public class GameScreen implements Screen {
         setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D, Input.Keys.SHIFT_LEFT, Input.Keys.TAB);
 
 
+        setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
+        setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
+        if(TimeUtils.nanoTime() - lastPowerUpDropTime > 1900000000){
+            spawnPowerUp();
+        }
+        if(TimeUtils.nanoTime() - lastTrapDropTime > 2000000000){
+            spawnTrap();
+        }
+        if(TimeUtils.nanoTime() - lastMusicBoxDropTime > 2000000000){
+            spawnMusicBox();
+        }
     }
 
-    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap, int usePowerUp) {
+    private void setPlayerControls(Player player, int up, int down, int left, int right, int placeTrap,int usePowerUp){
 
 
-        if (Gdx.input.isKeyPressed(left)) {
+        if(Gdx.input.isKeyPressed(left)) {
             player.x -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         }
-        if (Gdx.input.isKeyPressed(right)) {
+        if(Gdx.input.isKeyPressed(right)) {
             player.x += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         }
-        if (Gdx.input.isKeyPressed(down)) {
+        if(Gdx.input.isKeyPressed(down)) {
             player.y -= TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         }
-        if (Gdx.input.isKeyPressed(up)) {
+        if(Gdx.input.isKeyPressed(up)) {
             player.y += TRAVEL_DISTANCE * player.getMovementSpeed() * Gdx.graphics.getDeltaTime();
         }
-        if (Gdx.input.isKeyPressed(placeTrap)) {
+        if(Gdx.input.isKeyPressed(placeTrap)) {
             Trap trap = player.placeTrap();
-            if (trap != null) {
+            if (trap != null){
                 traps.add(trap);
             }
         }
-        if (Gdx.input.isKeyPressed(usePowerUp)) {
+        if(Gdx.input.isKeyPressed(usePowerUp)) {
             PowerUp powerUp;
-            if ((powerUp = player.getPowerUp()) != null) {
+            if ((powerUp = player.getPowerUp()) != null){
                 player.usePowerUp();
             }
         }
