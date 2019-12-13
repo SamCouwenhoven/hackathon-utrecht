@@ -30,6 +30,7 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 public class GameScreen implements Screen {
 
     private final int TRAVEL_DISTANCE = 200;
+    private final int MAX_BOXES = 4;
     public static final int X_SCREENLIMIT = 800;
     public static final int Y_SCREENLIMIT = 480;
     public static final int SPRITESIZE = 64;
@@ -48,6 +49,7 @@ public class GameScreen implements Screen {
     private Array<PowerUp> powerUps;
     private long lastTrapDropTime;
     private long lastPowerUpDropTime;
+    private long lastMusicBoxDropTime;
 
     public GameScreen(final LyricsFinder game) {
         this.game = game;
@@ -72,6 +74,7 @@ public class GameScreen implements Screen {
         bgm.setLooping(true);
         spawnPowerUp();
         spawnTrap();
+        spawnMusicBox();
 
     }
     private void spawnPowerUp(){
@@ -84,6 +87,13 @@ public class GameScreen implements Screen {
         int random = (int) (Math.random() * PowerUpType.values().length);
         traps.add(TrapFactory.getTrap(TrapType.values()[random]));
         lastTrapDropTime = TimeUtils.nanoTime();
+    }
+
+    private void spawnMusicBox(){
+        if(musicBoxes.size < MAX_BOXES){
+            musicBoxes.add(new MusicBox());
+        }
+        lastMusicBoxDropTime = TimeUtils.nanoTime();
     }
 
     @Override
@@ -111,9 +121,8 @@ public class GameScreen implements Screen {
             game.batch.draw(powerUp.getImage(), powerUp.getX(), powerUp.getY());
         }
 
-        for (MusicBox musicBox :musicBoxes
-        ) {game.batch.draw(musicBox.getImage(),musicBox.x,musicBox.y);
-
+        for (MusicBox musicBox :musicBoxes) {
+            game.batch.draw(musicBox.getImage(),musicBox.x,musicBox.y);
         }
 
         Iterator<MusicBox> musicBoxIterator = musicBoxes.iterator();
@@ -170,11 +179,14 @@ public class GameScreen implements Screen {
 
         setPlayerControls(player1, Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.SHIFT_RIGHT,Input.Keys.BACKSLASH);
         setPlayerControls(player2, Input.Keys.W, Input.Keys.S, Input.Keys.A, Input.Keys.D,Input.Keys.SHIFT_LEFT,Input.Keys.TAB);
-        if(TimeUtils.nanoTime() - lastPowerUpDropTime > 2000000000){
+        if(TimeUtils.nanoTime() - lastPowerUpDropTime > 1900000000){
             spawnPowerUp();
         }
         if(TimeUtils.nanoTime() - lastTrapDropTime > 2000000000){
             spawnTrap();
+        }
+        if(TimeUtils.nanoTime() - lastMusicBoxDropTime > 2000000000){
+            spawnMusicBox();
         }
     }
 
