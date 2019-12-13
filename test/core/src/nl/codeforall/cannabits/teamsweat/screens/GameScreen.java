@@ -37,7 +37,7 @@ public class GameScreen implements Screen {
     private final int MAX_BOXES = 1;
     public static final int X_SCREENLIMIT = 800;
     public static final int Y_SCREENLIMIT = 480;
-    public static final int SPRITESIZE = 64;
+    public static final int SPRITESIZE = 32;
     private float timeSeconds = 0f;
     private float period = 6f;
 
@@ -63,8 +63,19 @@ public class GameScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, X_SCREENLIMIT, Y_SCREENLIMIT);
 
-        player1 = new Player("Player 1");
-        player2 = new Player("Player 2");
+        player1 = new Player("Player 1", new Texture(Gdx.files.internal("player1/1_single_down.png")));
+        player2 = new Player("Player 2", new Texture(Gdx.files.internal("player2/2_single_down.png")));
+
+
+        player1.setTextureDown(new Texture(Gdx.files.internal("player1/1_single_down.png")));
+        player1.setTextureUp(new Texture(Gdx.files.internal("player1/1_single_up.png")));
+        player1.setTextureLeft(new Texture(Gdx.files.internal("player1/1_single_left.png")));
+        player1.setTextureRight(new Texture(Gdx.files.internal("player1/1_single_right.png")));
+
+        player2.setTextureDown(new Texture(Gdx.files.internal("player2/2_single_down.png")));
+        player2.setTextureUp(new Texture(Gdx.files.internal("player2/2_single_up.png")));
+        player2.setTextureLeft(new Texture(Gdx.files.internal("player2/2_single_left.png")));
+        player2.setTextureRight(new Texture(Gdx.files.internal("player2/2_single_right.png")));
 
         traps = new Array<>();
         traps.add(new FreezeTrap());
@@ -122,32 +133,35 @@ public class GameScreen implements Screen {
         game.font.draw(game.batch, "this is the temp gamescreen ", X_SCREENLIMIT, Y_SCREENLIMIT);
         game.batch.draw(player1.getImage(), player1.getX(), player1.getY());
         game.batch.draw(player2.getImage(), player2.getX(), player2.getY());
+        game.font.draw(game.batch, "Player 1: " + player1.getMusicBoxes(), 0, 470);
+        game.font.draw(game.batch, "Player 2: " + player2.getMusicBoxes(), 0, 440);
+
         for (Trap trap : traps) {
             game.batch.draw(trap.getImage(), trap.getX(), trap.getY());
         }
+
         for (PowerUp powerUp : powerUps) {
             game.batch.draw(powerUp.getImage(), powerUp.getX(), powerUp.getY());
         }
 
-        for (MusicBox musicBox : musicBoxes
-        ) {
+        for (MusicBox musicBox : musicBoxes) {
             game.batch.draw(musicBox.getImage(), musicBox.x, musicBox.y);}
 
         Iterator<MusicBox> musicBoxIterator = musicBoxes.iterator();
         while (musicBoxIterator.hasNext()) {
             MusicBox musicBox = musicBoxIterator.next();
             if (musicBox.overlaps(player1)) {
-                musicBox.getSound().play();
-                musicBoxIterator.remove();
                 player1.setMusicBoxes();
+                musicBox.getSound().play();
                 musicBoxes.add(new MusicBox());
+                musicBoxIterator.remove();
             }
 
             if (musicBox.overlaps(player2)) {
                 player2.setMusicBoxes();
                 musicBox.getSound().play();
-                musicBoxIterator.remove();
                 musicBoxes.add(new MusicBox());
+                musicBoxIterator.remove();
             }
         }
 
