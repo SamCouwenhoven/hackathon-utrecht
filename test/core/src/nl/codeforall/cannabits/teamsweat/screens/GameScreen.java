@@ -14,6 +14,7 @@ import nl.codeforall.cannabits.teamsweat.gameobjects.traps.FreezeTrap;
 import nl.codeforall.cannabits.teamsweat.gameobjects.traps.Trap;
 
 import java.util.Iterator;
+import nl.codeforall.cannabits.teamsweat.gameobjects.musicboxes.MusicBox;
 
 public class GameScreen implements Screen {
 
@@ -24,6 +25,8 @@ public class GameScreen implements Screen {
 
     private Player player1;
     private Player player2;
+
+    private Array<MusicBox> musicBoxes;
 
     private LyricsFinder game;
     private OrthographicCamera camera;
@@ -44,6 +47,9 @@ public class GameScreen implements Screen {
 
         powerUps = new Array<>();
         powerUps.add(new DoubleSpeed());
+
+        musicBoxes = new Array<>();
+        musicBoxes.add(new MusicBox());
 
 
     }
@@ -71,6 +77,20 @@ public class GameScreen implements Screen {
         for (PowerUp powerUp: powerUps) {
             game.batch.draw(powerUp.getImage(), powerUp.getX(), powerUp.getY());
         }
+
+        for (MusicBox musicBox :musicBoxes
+        ) {game.batch.draw(musicBox.getImage(),musicBox.x,musicBox.y);
+
+        }
+
+        Iterator<MusicBox> musicBoxIterator = musicBoxes.iterator();
+        while (musicBoxIterator.hasNext()) {
+            MusicBox musicBox = musicBoxIterator.next();
+            if (musicBox.overlaps(player1) || musicBox.overlaps(player2)) {
+                musicBox.getSound().play();
+                musicBoxIterator.remove();
+            }
+        }
         game.batch.end();
 
         Iterator<PowerUp> powerUpIterator = powerUps.iterator();
@@ -90,20 +110,20 @@ public class GameScreen implements Screen {
 
         }
 
-        Iterator<Trap> iter = traps.iterator();
-        while (iter.hasNext()) {
-            Trap trap = iter.next();
+        Iterator<Trap> trapIterator = traps.iterator();
+        while (trapIterator.hasNext()) {
+            Trap trap = trapIterator.next();
             if (trap.isPickedUp() && !trap.isArmed()) {
-                iter.remove();
+                trapIterator.remove();
             }
             if (trap.isArmed()) {
                 if (player1.overlaps(trap)) {
                     trap.spring();
-                    iter.remove();
+                    trapIterator.remove();
                 }
                 if (player2.overlaps(trap)) {
                     trap.spring();
-                    iter.remove();
+                    trapIterator.remove();
                 }
             }else{
                 if (player1.overlaps(trap)){

@@ -15,6 +15,7 @@ public class Player extends GameObject{
     private int movementSpeed;
     private ArrayList words;
     private static Texture PLAYER_TEXTURE = new Texture(Gdx.files.internal("example/droplet.png"));
+    private int musicBoxes;
 
 
     public Player(){
@@ -94,6 +95,10 @@ public class Player extends GameObject{
 
     public void setFire(){
         //inverted controls, triple speed
+    }
+
+    public void setMusicBoxes(){
+        this.musicBoxes++;
     }
 
 }
