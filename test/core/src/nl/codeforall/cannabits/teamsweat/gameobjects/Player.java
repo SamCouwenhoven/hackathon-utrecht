@@ -13,12 +13,17 @@ public class Player extends GameObject{
     private boolean freeze;
     private int movementSpeed;
     private ArrayList words;
+    private int musicBoxes;
 
 
     public Player(Texture image){
         super(image);
         movementSpeed = 1;
         words = new ArrayList();
+    }
+
+    public Player() {
+        super();
     }
 
     public void move(){
@@ -75,6 +80,10 @@ public class Player extends GameObject{
 
     public void setFire(){
         //inverted controls, triple speed
+    }
+
+    public void setMusicBoxes(){
+        this.musicBoxes++;
     }
 
 }
